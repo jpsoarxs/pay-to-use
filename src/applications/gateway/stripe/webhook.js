@@ -1,4 +1,5 @@
 const stripe = require('stripe')('sk_test_51DwXtgEAlUVbW0n6cuaO2D0oPz7rutcx2JEcfHkW4FDeDGp7xK4jMMtLbsdeYUEiZ6MKT6zwG9VF9A78NoaGhvh500qcKp2Qte');
+const logger = require('./../../../utils/logger');
 
 const webhook = async (req, res) => {
   let data;
@@ -18,7 +19,8 @@ const webhook = async (req, res) => {
         webhookSecret
       );
     } catch (err) {
-      console.log(`⚠️  Webhook signature verification failed.`);
+      logger.info(`⚠️  Webhook signature verification failed.`)
+      logger.error(err)
       res.sendStatus(400)
     }
     // Extract the object from the event.

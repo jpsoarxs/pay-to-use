@@ -1,10 +1,16 @@
-const validate = (req, res, next) => {
-  const auth = { login: 'teste', password: '123' }
-  const b64auth = (req.headers.authorization || '').split(' ')[1] || ''
-  const [login, password] = Buffer.from(b64auth, 'base64').toString().split(':')
+const Customer = require('./../database/models/customer')
+const logger = require('./../utils/logger')
 
-  if (login && password && login === auth.login && password === auth.password) {
-    return next()
+const validate = async (req, res, next) => {
+  const b64auth = req.headers.authorization || ''
+  const [customerId, key] = Buffer.from(b64auth, 'base64').toString().split(':')
+
+  const customer = await Customer.findOne({ customer: customerId, key }).lean()
+
+  if (customer) {
+    if (customer.active) { req.user = customer; return next() }
+
+    logger.info(`⚠️ license user ${customer.customer} expired`)
   }
 
   res.set('WWW-Authenticate', 'Basic realm="401"')

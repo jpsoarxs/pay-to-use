@@ -1,9 +1,10 @@
 const express = require('express');
 
-const gatewayController = require('./gateway')
+const customerController = require('./customer')
+const middleware = require('./../middlewares/authenticate')
 
 const router = express.Router();
 
-router.use('/gateway', gatewayController);
+router.use('/customer', middleware, customerController);
 
 module.exports = router;
