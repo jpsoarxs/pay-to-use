@@ -1,8 +1,11 @@
 const express = require('express');
 const router = express.Router();
 
-router.get('/stripe', function (req, res) {
-  res.send('Stripe');
+const stripeApp = require('./../../applications/gateway/stripe')
+
+router.get('/stripe', async function (req, res) {
+  const session = await stripeApp()
+  res.send(session);
 });
 
 module.exports = router;
